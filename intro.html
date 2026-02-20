@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gauthier Tijtgat — Museum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1614; }
+    canvas { display: block; position: fixed; inset: 0; }
+
+    /* --- Tooltip --- */
+    #photoTooltip {
+      position: fixed;
+      bottom: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Special Elite', 'Courier New', monospace;
+      text-align: center;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #photoTooltip.visible { opacity: 1; }
+    #photoTooltip .tt-name {
+      display: block;
+      font-size: 20px;
+      color: #f5f5f5;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    #photoTooltip .tt-year {
+      display: block;
+      font-size: 11px;
+      color: rgba(245,245,245,0.45);
+      letter-spacing: 4px;
+      margin-top: 5px;
+    }
+
+    /* --- Controls Hint --- */
+    #controlsHint {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Special Elite', 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: rgba(245,245,245,0.35);
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+      transition: opacity 0.8s ease;
+    }
+
+    /* --- Skip Button --- */
+    #skipBtn {
+      position: fixed;
+      top: 24px;
+      right: 28px;
+      font-family: 'Special Elite', 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: rgba(245,245,245,0.4);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 200;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+    }
+    #skipBtn:hover { color: rgba(245,245,245,0.9); }
+
+    /* --- Brand top left --- */
+    #brand {
+      position: fixed;
+      top: 24px;
+      left: 28px;
+      font-family: 'Special Elite', 'Courier New', monospace;
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: rgba(245,245,245,0.5);
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    /* --- Minimap --- */
+    #minimap {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 90px;
+      height: 108px;
+      border: 1px solid rgba(245,245,245,0.12);
+      z-index: 100;
+      opacity: 0.6;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    /* --- Transition Overlay --- */
+    #transitionOverlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* --- Mobile Splash --- */
+    #mobileSplash {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #1a1614;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-family: 'Special Elite', 'Courier New', monospace;
+      text-align: center;
+      padding: 40px;
+    }
+    #mobileSplash .ms-brand {
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: #f5f5f5;
+      margin-bottom: 10px;
+    }
+    #mobileSplash .ms-sub {
+      font-size: 11px;
+      letter-spacing: 5px;
+      color: rgba(245,245,245,0.4);
+      margin-bottom: 40px;
+    }
+    #mobileSplash .ms-desc {
+      font-size: 13px;
+      color: rgba(245,245,245,0.5);
+      line-height: 2;
+      margin-bottom: 50px;
+      max-width: 320px;
+    }
+    #mobileSplash .ms-btn {
+      font-family: 'Special Elite', 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: #f5f5f5;
+      background: none;
+      border: 1px solid rgba(245,245,245,0.3);
+      padding: 14px 28px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    #mobileSplash .ms-btn:hover { border-color: rgba(245,245,245,0.8); }
+  </style>
+</head>
+<body>
+
+  <!-- Brand -->
+  <div id="brand">GAUTHIER TIJTGAT</div>
+
+  <!-- Skip -->
+  <button id="skipBtn" onclick="window.location.href='index.html'">SKIP INTRO →</button>
+
+  <!-- Photo Tooltip -->
+  <div id="photoTooltip">
+    <span class="tt-name"></span>
+    <span class="tt-year"></span>
+  </div>
+
+  <!-- Controls Hint -->
+  <div id="controlsHint">WASD · DRIVE &nbsp;|&nbsp; REACH THE EXIT DOOR · ENTER GALLERY</div>
+
+  <!-- Minimap -->
+  <canvas id="minimap"></canvas>
+
+  <!-- Transition Overlay -->
+  <div id="transitionOverlay"></div>
+
+  <!-- Mobile Splash -->
+  <div id="mobileSplash">
+    <div class="ms-brand">GAUTHIER TIJTGAT</div>
+    <div class="ms-sub">— PHOTOGRAPHY —</div>
+    <p class="ms-desc">The 3D museum experience is best enjoyed on desktop. Head straight to the gallery.</p>
+    <a href="index.html" class="ms-btn">[ ENTER GALLERY ]</a>
+  </div>
+
+  <script>
+  // ─────────────────────────────────────────────
+  //  PHOTO DATA (extracted from index.html)
+  // ─────────────────────────────────────────────
+  const PHOTO_DATA = [
+    { name: "01 Willa",              year: "2020", thumb: "thumbs/01_Willa_2020.JPG" },
+    { name: "02 Wirtz",              year: "2025", thumb: "thumbs/02_Wirtz_2025.jpg" },
+    { name: "03 Iced",               year: "2017", thumb: "thumbs/03_Iced_2017.JPG" },
+    { name: "04 Gamble - Tokyo",     year: "2025", thumb: "thumbs/04_Gamble - Tokyo_2025.jpg" },
+    { name: "05 Amigos",             year: "2024", thumb: "thumbs/05_Amigos_2024.jpg" },
+    { name: "06 Castro",             year: "2026", thumb: "thumbs/06_Castro_2026.jpg" },
+    { name: "07 Alca",               year: "2024", thumb: "thumbs/07_Alca.jpg" },
+    { name: "08 Balcony",            year: "2025", thumb: "thumbs/08_Balcony_2025.jpg" },
+    { name: "09 Harley in Paris",    year: "2022", thumb: "thumbs/09_Harley in Paris_2022.JPG" },
+    { name: "1-3",                   year: "2025", thumb: "thumbs/1-3_2025.jpg" },
+    { name: "Alcatraz",              year: "2023", thumb: "thumbs/Alcatraz_2023.JPG" },
+    { name: "Amber",                 year: "2016", thumb: "thumbs/Amber_2016.JPG" },
+    { name: "Balou",                 year: "2022", thumb: "thumbs/Balou_2022.JPG" },
+    { name: "Bellesoeurs",           year: "2021", thumb: "thumbs/Bellesoeurs_2021.JPG" },
+    { name: "Boats",                 year: "2025", thumb: "thumbs/Boats_2025.jpg" },
+    { name: "Broad",                 year: "2026", thumb: "thumbs/Broad_2026.jpg" },
+    { name: "Bryce",                 year: "2024", thumb: "thumbs/Bryce_2024.jpg" },
+    { name: "C63",                   year: "2020", thumb: "thumbs/C63_2020.jpg" },
+    { name: "Cab",                   year: "2019", thumb: "thumbs/Cab_2019.JPG" },
+    { name: "Caleb",                 year: "2022", thumb: "thumbs/Caleb_2022.JPG" },
+    { name: "Carlos at the Piscine", year: "2023", thumb: "thumbs/Carlos at the Piscine_2023.JPG" },
+    { name: "Caro",                  year: "2023", thumb: "thumbs/Caro_2023.JPG" },
+    { name: "Church in Aus",         year: "2025", thumb: "thumbs/Church in Aus_2025.jpg" },
+    { name: "Crooked",               year: "2025", thumb: "thumbs/Crooked_2025.jpg" },
+    { name: "Cruising",              year: "2020", thumb: "thumbs/Cruising_2020.JPG" },
+    { name: "Dead",                  year: "2024", thumb: "thumbs/Dead_2024.JPG" },
+    { name: "Dustin",                year: "2020", thumb: "thumbs/Dustin_2020.JPG" },
+    { name: "Emoh",                  year: "2016", thumb: "thumbs/Emoh_2016.JPG" },
+    { name: "FLUME",                 year: "2022", thumb: "thumbs/FLUME_2022.JPG" },
+    { name: "Flying",                year: "2025", thumb: "thumbs/Flying_2025.jpg" },
+    { name: "Glacier",               year: "2025", thumb: "thumbs/Glacier_2025.jpg" },
+    { name: "HK",                    year: "2020", thumb: "thumbs/HK_2020.JPG" },
+    { name: "Harley",                year: "2016", thumb: "thumbs/Harley_2016.JPG" },
+    { name: "Hill",                  year: "2025", thumb: "thumbs/Hill_2025.jpg" },
+    { name: "House",                 year: "2016", thumb: "thumbs/House_2016.JPG" },
+    { name: "Jagerbars",             year: "2019", thumb: "thumbs/Jagerbars_2019.JPG" },
+    { name: "Japan Cat",             year: "2025", thumb: "thumbs/Japan Cat_2025.JPG" },
+    { name: "Jinx",                  year: "2022", thumb: "thumbs/Jinx_2022.JPG" },
+    { name: "Joy",                   year: "2020", thumb: "thumbs/Joy_2020.JPG" },
+    { name: "Julie",                 year: "2021", thumb: "thumbs/Julie_2021.JPG" },
+    { name: "Kings at Zandvoort",    year: "2022", thumb: "thumbs/Kings at Zandvoort_2022.JPG" },
+    { name: "LAX",                   year: "2026", thumb: "thumbs/LAX_2026.jpg" },
+    { name: "Ladies",                year: "2024", thumb: "thumbs/Ladies_2024.JPG" },
+    { name: "Last Dance",            year: "2022", thumb: "thumbs/Last Dance_2022.jpg" },
+    { name: "Mandy",                 year: "2020", thumb: "thumbs/Mandy_2020.JPG" },
+    { name: "Marina",                year: "2023", thumb: "thumbs/Marina_2023.JPG" },
+    { name: "Matrix",                year: "2019", thumb: "thumbs/Matrix_2019.JPG" },
+    { name: "Monké",                 year: "2025", thumb: "thumbs/Monké_2025.jpg" },
+    { name: "Monterey",              year: "2024", thumb: "thumbs/Monterey_2024.JPG" },
+    { name: "Nathan",                year: "2025", thumb: "thumbs/Nathan_2025.jpg" },
+    { name: "Neon in HK",            year: "2020", thumb: "thumbs/Neon in HK_2020.JPG" },
+    { name: "Nightwalk 101",         year: "2025", thumb: "thumbs/Nightwalk 101_2025.jpg" },
+    { name: "Norvège",               year: "2025", thumb: "thumbs/Norvège_2025.jpg" },
+    { name: "One last lake",         year: "2025", thumb: "thumbs/One last lake_2025.jpg" },
+    { name: "Orange in Monaco",      year: "2021", thumb: "thumbs/Orange in Monaco_2021.jpg" },
+    { name: "Piastri in MC",         year: "2023", thumb: "thumbs/Piastri in MC_2023.JPG" },
+    { name: "Pigs",                  year: "2022", thumb: "thumbs/Pigs_2022.JPG" },
+    { name: "Porsché",               year: "2019", thumb: "thumbs/Porsché_2019.JPG" },
+    { name: "Robots",                year: "2024", thumb: "thumbs/Robots_2024.jpg" },
+    { name: "Skaterboi",             year: "2026", thumb: "thumbs/Skaterboi_2026.jpg" },
+    { name: "Sloan",                 year: "2019", thumb: "thumbs/Sloan_2019.JPG" },
+    { name: "Stones",                year: "2023", thumb: "thumbs/Stones_2023.JPG" },
+    { name: "Studios",               year: "2023", thumb: "thumbs/Studios_2023.JPG" },
+    { name: "TS",                    year: "2016", thumb: "thumbs/TS_2016.JPG" },
+    { name: "Tall",                  year: "2017", thumb: "thumbs/Tall_2017.JPG" },
+    { name: "Tennis Courts",         year: "2022", thumb: "thumbs/Tennis Courts_2022.JPG" },
+    { name: "The Last House",        year: "2026", thumb: "thumbs/The Last House_2026.jpg" },
+    { name: "Tokyo Drift",           year: "2025", thumb: "thumbs/Tokyo Drift_2025.JPG" },
+    { name: "Toto",                  year: "2022", thumb: "thumbs/Toto_2022.JPG" },
+    { name: "Trees",                 year: "2025", thumb: "thumbs/Trees_2025.jpg" },
+    { name: "Valley",                year: "2025", thumb: "thumbs/Valley_2025.jpg" },
+    { name: "Vatteri",               year: "2022", thumb: "thumbs/Vatteri_2022.JPG" },
+    { name: "Vegas",                 year: "2023", thumb: "thumbs/Vegas_2023.JPG" },
+    { name: "Venice",                year: "2026", thumb: "thumbs/Venice_2026.jpg" },
+    { name: "Wall",                  year: "2016", thumb: "thumbs/Wall_2016.JPG" },
+    { name: "Whaling",               year: "2024", thumb: "thumbs/Whaling_2024.jpg" },
+    { name: "Willa Holland",         year: "2019", thumb: "thumbs/Willa Holland_2019.JPG" },
+    { name: "YSMT",                  year: "2023", thumb: "thumbs/YSMT_2023.JPG" },
+    { name: "Yosemite",              year: "2023", thumb: "thumbs/Yosemite_2023.JPG" },
+    { name: "Yosemite",              year: "2024", thumb: "thumbs/Yosemite_2024.jpg" },
+    { name: "Zion",                  year: "2024", thumb: "thumbs/Zion_2024.jpg" },
+  ];
+
+  // ─────────────────────────────────────────────
+  //  MOBILE DETECTION
+  // ─────────────────────────────────────────────
+  const isTouch  = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const isMobile = isTouch || window.innerWidth < 768;
+
+  if (isMobile) {
+    document.getElementById('mobileSplash').style.display = 'flex';
+  } else {
+    initMuseum();
+  }
+
+  // ─────────────────────────────────────────────
+  //  MAIN 3D INIT
+  // ─────────────────────────────────────────────
+  function initMuseum() {
+
+    // ── Renderer ──────────────────────────────
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.85;
+    document.body.insertBefore(renderer.domElement, document.body.firstChild);
+
+    // ── Scene ─────────────────────────────────
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1614);
+    scene.fog = new THREE.FogExp2(0x1a1614, 0.018);
+
+    // ── Camera ────────────────────────────────
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 120);
+    camera.position.set(0, 14, 18);
+    camera.lookAt(0, 0, 0);
+
+    let camCurrentPos  = camera.position.clone();
+    let camCurrentLook = new THREE.Vector3(0, 0, 0);
+
+    // ── Museum constants ─────────────────────
+    const ROOM_W = 50;
+    const ROOM_D = 60;
+    const WALL_H = 6.5;
+    const WALL_T = 0.35;
+
+    // ─────────────────────────────────────────
+    //  PROCEDURAL WOOD FLOOR TEXTURE
+    // ─────────────────────────────────────────
+    function generateWoodTexture(size) {
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = size;
+      const ctx = cv.getContext('2d');
+      ctx.fillStyle = '#c49a5a';
+      ctx.fillRect(0, 0, size, size);
+      const plankH = size / 10;
+      for (let i = 0; i < 10; i++) {
+        const y = i * plankH;
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(160,100,40,0.10)' : 'rgba(240,180,100,0.08)';
+        ctx.fillRect(0, y, size, plankH);
+        ctx.fillStyle = 'rgba(60,35,10,0.28)';
+        ctx.fillRect(0, y, size, 1.5);
+        for (let j = 0; j < 10; j++) {
+          const gy = y + Math.random() * plankH;
+          ctx.beginPath();
+          ctx.moveTo(0, gy);
+          ctx.bezierCurveTo(
+            size * 0.3, gy + (Math.random()*6 - 3),
+            size * 0.7, gy + (Math.random()*6 - 3),
+            size, gy
+          );
+          ctx.strokeStyle = `rgba(100,55,15,${Math.random()*0.09+0.02})`;
+          ctx.lineWidth = Math.random() * 1.2 + 0.3;
+          ctx.stroke();
+        }
+      }
+      const tex = new THREE.CanvasTexture(cv);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(9, 11);
+      return tex;
+    }
+
+    // ── Floor ────────────────────────────────
+    const floorGeo = new THREE.PlaneGeometry(ROOM_W, ROOM_D);
+    const floorMat = new THREE.MeshStandardMaterial({
+      map: generateWoodTexture(512), roughness: 0.88, metalness: 0.01
+    });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // ── Ceiling ───────────────────────────────
+    const ceilGeo = new THREE.PlaneGeometry(ROOM_W + 2, ROOM_D + 2);
+    const ceilMat = new THREE.MeshStandardMaterial({ color: 0xfaf8f5, roughness: 1.0 });
+    const ceiling = new THREE.Mesh(ceilGeo, ceilMat);
+    ceiling.rotation.x = Math.PI / 2;
+    ceiling.position.y = WALL_H;
+    scene.add(ceiling);
+
+    // ─────────────────────────────────────────
+    //  WALL DEFINITIONS  {x, z, w, d, rotY}
+    //  w = along long axis, d = thickness axis
+    // ─────────────────────────────────────────
+    const HW = ROOM_W / 2;   // 25
+    const HD = ROOM_D / 2;   // 30
+
+    const wallDefs = [
+      // ── Outer perimeter ──
+      { x: 0,   z: -HD,  w: ROOM_W + WALL_T*2, d: WALL_T, rotY: 0 },          // North
+      { x: 0,   z:  HD,  w: ROOM_W + WALL_T*2, d: WALL_T, rotY: 0 },          // South (exit gap handled later)
+      { x: -HW, z: 0,    w: ROOM_D + WALL_T*2, d: WALL_T, rotY: Math.PI/2 },  // West
+      { x:  HW, z: 0,    w: ROOM_D + WALL_T*2, d: WALL_T, rotY: Math.PI/2 },  // East
+
+      // ── Internal partitions — create a cross-wing layout ──
+      // Central N-S divider (left half)
+      { x: -10, z: -8,   w: 18, d: WALL_T, rotY: Math.PI/2 },
+      // Central N-S divider (right half)
+      { x:  10, z: -8,   w: 18, d: WALL_T, rotY: Math.PI/2 },
+      // East-West connector
+      { x:  0,  z: -17,  w: 18, d: WALL_T, rotY: 0 },
+      // Side alcove left
+      { x: -18, z: 6,    w: 12, d: WALL_T, rotY: Math.PI/2 },
+      // Side alcove right
+      { x:  18, z: 6,    w: 12, d: WALL_T, rotY: Math.PI/2 },
+    ];
+
+    // South wall with EXIT gap (two segments)
+    const EXIT_GAP = 6;
+    wallDefs.push(
+      { x: -(ROOM_W/4 + EXIT_GAP/4), z: HD, w: ROOM_W/2 - EXIT_GAP/2, d: WALL_T, rotY: 0 },
+      { x:  (ROOM_W/4 + EXIT_GAP/4), z: HD, w: ROOM_W/2 - EXIT_GAP/2, d: WALL_T, rotY: 0 }
+    );
+
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xf0ede8, roughness: 0.92, metalness: 0.0 });
+
+    // Build collision data alongside walls
+    const collisionBoxes = [];
+
+    wallDefs.forEach(def => {
+      const geo = new THREE.BoxGeometry(def.w, WALL_H, def.d);
+      const mesh = new THREE.Mesh(geo, wallMat);
+      mesh.position.set(def.x, WALL_H / 2, def.z);
+      mesh.rotation.y = def.rotY;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+
+      // AABB collision (accounting for rotation 0 or PI/2)
+      const hw = def.w / 2 + 1.2;
+      const hd = def.d / 2 + 1.2;
+      if (Math.abs(def.rotY % Math.PI) < 0.1) {
+        collisionBoxes.push({ minX: def.x - hw, maxX: def.x + hw, minZ: def.z - hd, maxZ: def.z + hd });
+      } else {
+        collisionBoxes.push({ minX: def.x - hd, maxX: def.x + hd, minZ: def.z - hw, maxZ: def.z + hw });
+      }
+    });
+
+    // ─────────────────────────────────────────
+    //  LIGHTING
+    // ─────────────────────────────────────────
+    scene.add(new THREE.AmbientLight(0xfff5e4, 0.30));
+    scene.add(new THREE.HemisphereLight(0xfff0d0, 0x7a6344, 0.18));
+
+    const spotPositions = [
+      [-15, -20], [15, -20],
+      [-15, -5],  [15, -5],
+      [-15,  12], [15,  12],
+      [0,    22],
+    ];
+    spotPositions.forEach(([sx, sz]) => {
+      const spot = new THREE.SpotLight(0xfff8e7, 3.5);
+      spot.position.set(sx, WALL_H - 0.3, sz);
+      spot.target.position.set(sx, 0, sz);
+      spot.angle = Math.PI / 6;
+      spot.penumbra = 0.5;
+      spot.decay = 1.6;
+      spot.distance = 22;
+      spot.castShadow = true;
+      spot.shadow.mapSize.set(512, 512);
+      spot.shadow.camera.near = 0.5;
+      spot.shadow.camera.far = 22;
+      scene.add(spot);
+      scene.add(spot.target);
+    });
+
+    // Accent lights (no shadow) above partition walls
+    [[-10, -14], [10, -14], [-18, 8], [18, 8]].forEach(([x, z]) => {
+      const pl = new THREE.PointLight(0xffedd0, 1.2, 14);
+      pl.position.set(x, 5.5, z);
+      scene.add(pl);
+    });
+
+    // ─────────────────────────────────────────
+    //  EXIT MARKER
+    // ─────────────────────────────────────────
+    const exitMarkerGeo = new THREE.PlaneGeometry(EXIT_GAP, 3);
+    const exitMarkerMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff, emissive: 0xfff5cc,
+      emissiveIntensity: 0.5, roughness: 0.9,
+      transparent: true, opacity: 0.30
+    });
+    const exitMarker = new THREE.Mesh(exitMarkerGeo, exitMarkerMat);
+    exitMarker.rotation.x = -Math.PI / 2;
+    exitMarker.position.set(0, 0.01, HD - 1.5);
+    scene.add(exitMarker);
+
+    gsap.to(exitMarkerMat, {
+      emissiveIntensity: 1.0, duration: 1.4,
+      repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+
+    // Exit archway pillars
+    [-EXIT_GAP/2, EXIT_GAP/2].forEach(px => {
+      const pGeo = new THREE.BoxGeometry(0.35, WALL_H, 0.35);
+      const pMesh = new THREE.Mesh(pGeo, wallMat);
+      pMesh.position.set(px, WALL_H/2, HD);
+      pMesh.castShadow = true;
+      scene.add(pMesh);
+    });
+
+    // ─────────────────────────────────────────
+    //  RC CAR
+    // ─────────────────────────────────────────
+    const car = new THREE.Group();
+
+    // Body
+    const bodyGeo = new THREE.BoxGeometry(1.6, 0.52, 2.6);
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xe63946, roughness: 0.35, metalness: 0.35 });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 0.38;
+    body.castShadow = true;
+    car.add(body);
+
+    // Cabin
+    const cabinGeo = new THREE.BoxGeometry(1.1, 0.42, 1.3);
+    const cabinMat = new THREE.MeshStandardMaterial({ color: 0xffd60a, roughness: 0.5, metalness: 0.1 });
+    const cabin = new THREE.Mesh(cabinGeo, cabinMat);
+    cabin.position.set(0, 0.78, -0.1);
+    cabin.castShadow = true;
+    car.add(cabin);
+
+    // Windshield (dark glass)
+    const wsGeo = new THREE.BoxGeometry(0.95, 0.30, 0.06);
+    const wsMat = new THREE.MeshStandardMaterial({ color: 0x1a2a3a, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.7 });
+    const ws = new THREE.Mesh(wsGeo, wsMat);
+    ws.position.set(0, 0.80, 0.56);
+    car.add(ws);
+
+    // Spoiler
+    const spGeo = new THREE.BoxGeometry(1.3, 0.06, 0.40);
+    const spMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.5, metalness: 0.3 });
+    const spoiler = new THREE.Mesh(spGeo, spMat);
+    spoiler.position.set(0, 0.90, -1.1);
+    car.add(spoiler);
+
+    // Wheels
+    const wheelGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.22, 14);
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.85, metalness: 0.12 });
+    const hubGeo   = new THREE.CylinderGeometry(0.14, 0.14, 0.24, 8);
+    const hubMat   = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.4, metalness: 0.7 });
+
+    const wheelPositions = [
+      [-0.9, 0.18,  0.85],
+      [ 0.9, 0.18,  0.85],
+      [-0.9, 0.18, -0.85],
+      [ 0.9, 0.18, -0.85],
+    ];
+    const wheels = [];
+    wheelPositions.forEach(pos => {
+      const wg = new THREE.Group();
+      const w = new THREE.Mesh(wheelGeo, wheelMat);
+      w.rotation.z = Math.PI / 2;
+      w.castShadow = true;
+      wg.add(w);
+      const h = new THREE.Mesh(hubGeo, hubMat);
+      h.rotation.z = Math.PI / 2;
+      wg.add(h);
+      wg.position.set(...pos);
+      wheels.push(wg);
+      car.add(wg);
+    });
+
+    // Headlights
+    const hlGeo = new THREE.BoxGeometry(0.24, 0.14, 0.06);
+    const hlMat = new THREE.MeshStandardMaterial({ color: 0xffffee, emissive: 0xffffee, emissiveIntensity: 0.6, roughness: 0.2 });
+    [-0.48, 0.48].forEach(hx => {
+      const hl = new THREE.Mesh(hlGeo, hlMat);
+      hl.position.set(hx, 0.38, 1.33);
+      car.add(hl);
+    });
+
+    car.position.set(0, 0, 18);
+    car.castShadow = true;
+    scene.add(car);
+
+    // Car point light (ambient glow)
+    const carLight = new THREE.PointLight(0xff6655, 0.5, 4);
+    car.add(carLight);
+    carLight.position.set(0, 0.5, 0);
+
+    // ─────────────────────────────────────────
+    //  CAR CONTROLS & PHYSICS
+    // ─────────────────────────────────────────
+    const keys = { forward: false, backward: false, left: false, right: false };
+    document.addEventListener('keydown', e => {
+      if (['w','W','ArrowUp'].includes(e.key))    { keys.forward  = true; e.preventDefault(); }
+      if (['s','S','ArrowDown'].includes(e.key))  { keys.backward = true; e.preventDefault(); }
+      if (['a','A','ArrowLeft'].includes(e.key))  { keys.left     = true; e.preventDefault(); }
+      if (['d','D','ArrowRight'].includes(e.key)) { keys.right    = true; e.preventDefault(); }
+    });
+    document.addEventListener('keyup', e => {
+      if (['w','W','ArrowUp'].includes(e.key))    keys.forward  = false;
+      if (['s','S','ArrowDown'].includes(e.key))  keys.backward = false;
+      if (['a','A','ArrowLeft'].includes(e.key))  keys.left     = false;
+      if (['d','D','ArrowRight'].includes(e.key)) keys.right    = false;
+    });
+
+    let carVel = 0;
+    let carAngVel = 0;
+    const CAR_ACCEL     = 10;
+    const CAR_REVERSE   = 5;
+    const CAR_TURN      = 2.4;
+    const CAR_FRICTION  = 0.86;
+    const CAR_ANG_FRIC  = 0.80;
+    const CAR_MAX_SPEED = 9;
+    const CAR_RADIUS    = 1.1;
+
+    function checkCollision(nx, nz) {
+      for (const b of collisionBoxes) {
+        const cx = Math.max(b.minX, Math.min(nx, b.maxX));
+        const cz = Math.max(b.minZ, Math.min(nz, b.maxZ));
+        const dx = nx - cx, dz = nz - cz;
+        if (dx*dx + dz*dz < CAR_RADIUS * CAR_RADIUS) return true;
+      }
+      return false;
+    }
+
+    function updateCar(dt) {
+      if (keys.forward)  carVel += CAR_ACCEL * dt;
+      if (keys.backward) carVel -= CAR_REVERSE * dt;
+
+      const speed = Math.abs(carVel);
+      const dir   = Math.sign(carVel) || 1;
+      if (speed > 0.05) {
+        if (keys.left)  carAngVel += CAR_TURN * dt * dir;
+        if (keys.right) carAngVel -= CAR_TURN * dt * dir;
+      }
+
+      carVel    *= CAR_FRICTION;
+      carAngVel *= CAR_ANG_FRIC;
+      carVel     = Math.max(-4, Math.min(CAR_MAX_SPEED, carVel));
+
+      car.rotation.y += carAngVel;
+
+      const dx = Math.sin(car.rotation.y) * carVel * dt;
+      const dz = Math.cos(car.rotation.y) * carVel * dt;
+      const nx = car.position.x + dx;
+      const nz = car.position.z + dz;
+
+      if (!checkCollision(nx, car.position.z)) car.position.x = nx;
+      else { carVel *= -0.15; carAngVel *= 0.2; }
+      if (!checkCollision(car.position.x, nz)) car.position.z = nz;
+      else { carVel *= -0.15; carAngVel *= 0.2; }
+
+      // Wheel spin
+      const spinRate = carVel * dt * 3.2;
+      wheels.forEach(wg => { wg.children[0].rotation.x += spinRate; });
+
+      // Car body tilt on acceleration/braking
+      body.rotation.x = -carVel * 0.018;
+      cabin.rotation.x = -carVel * 0.018;
+    }
+
+    // ─────────────────────────────────────────
+    //  PHOTO FRAMES
+    // ─────────────────────────────────────────
+    // Frame slots: { pos:[x,y,z], rotY, photoIndex }
+    // rotY faces INTO the room (facing player)
+    const FRAME_SLOTS = [
+      // ─ NORTH wall (z = -HD + 0.3, faces south) ─
+      { pos: [-20, 3.0, -HD+0.22], rotY: 0 },
+      { pos: [-12, 3.0, -HD+0.22], rotY: 0 },
+      { pos: [ -4, 3.0, -HD+0.22], rotY: 0 },
+      { pos: [  4, 3.0, -HD+0.22], rotY: 0 },
+      { pos: [ 12, 3.0, -HD+0.22], rotY: 0 },
+      { pos: [ 20, 3.0, -HD+0.22], rotY: 0 },
+
+      // ─ WEST wall (x = -HW + 0.2, faces east) ─
+      { pos: [-HW+0.22, 3.0, -22], rotY:  Math.PI/2 },
+      { pos: [-HW+0.22, 3.0, -12], rotY:  Math.PI/2 },
+      { pos: [-HW+0.22, 3.0,  -2], rotY:  Math.PI/2 },
+      { pos: [-HW+0.22, 3.0,  10], rotY:  Math.PI/2 },
+      { pos: [-HW+0.22, 3.0,  20], rotY:  Math.PI/2 },
+
+      // ─ EAST wall (x = HW - 0.2, faces west) ─
+      { pos: [HW-0.22, 3.0, -22], rotY: -Math.PI/2 },
+      { pos: [HW-0.22, 3.0, -12], rotY: -Math.PI/2 },
+      { pos: [HW-0.22, 3.0,  -2], rotY: -Math.PI/2 },
+      { pos: [HW-0.22, 3.0,  10], rotY: -Math.PI/2 },
+      { pos: [HW-0.22, 3.0,  20], rotY: -Math.PI/2 },
+
+      // ─ Central partition SOUTH faces (z = -17 + 0.18) ─
+      { pos: [-6, 3.0, -16.82], rotY: 0 },
+      { pos: [ 0, 3.0, -16.82], rotY: 0 },
+      { pos: [ 6, 3.0, -16.82], rotY: 0 },
+
+      // ─ Central partition NORTH faces (z = -17 - 0.18) ─
+      { pos: [-6, 3.0, -17.18], rotY: Math.PI },
+      { pos: [ 0, 3.0, -17.18], rotY: Math.PI },
+      { pos: [ 6, 3.0, -17.18], rotY: Math.PI },
+
+      // ─ Left-side partition faces (x = -10 + 0.18) ─
+      { pos: [-9.82, 3.0, -14], rotY:  Math.PI/2 },
+      { pos: [-9.82, 3.0,  -6], rotY:  Math.PI/2 },
+
+      // ─ Left-side partition faces (x = -10 - 0.18) ─
+      { pos: [-10.18, 3.0, -14], rotY: -Math.PI/2 },
+      { pos: [-10.18, 3.0,  -6], rotY: -Math.PI/2 },
+
+      // ─ Right-side partition faces (x = 10 + 0.18) ─
+      { pos: [ 9.82, 3.0, -14], rotY: -Math.PI/2 },
+      { pos: [ 9.82, 3.0,  -6], rotY: -Math.PI/2 },
+
+      // ─ Right-side partition faces (x = 10 - 0.18) ─
+      { pos: [10.18, 3.0, -14], rotY:  Math.PI/2 },
+      { pos: [10.18, 3.0,  -6], rotY:  Math.PI/2 },
+
+      // ─ Left alcove wall faces ─
+      { pos: [-17.82, 3.0, 2], rotY:  Math.PI/2 },
+      { pos: [-17.82, 3.0, 10], rotY: Math.PI/2 },
+      { pos: [-18.18, 3.0, 2], rotY: -Math.PI/2 },
+      { pos: [-18.18, 3.0, 10], rotY: -Math.PI/2 },
+
+      // ─ Right alcove wall faces ─
+      { pos: [17.82, 3.0, 2],  rotY: -Math.PI/2 },
+      { pos: [17.82, 3.0, 10], rotY: -Math.PI/2 },
+      { pos: [18.18, 3.0, 2],  rotY:  Math.PI/2 },
+      { pos: [18.18, 3.0, 10], rotY:  Math.PI/2 },
+    ];
+
+    const textureLoader = new THREE.TextureLoader();
+    const LOAD_DIST = 14;
+    const FRAME_W = 2.5, FRAME_H = 1.9, FRAME_T = 0.07;
+    const frameObjects = [];
+
+    const frameBorderMat  = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, metalness: 0.05 });
+    const matBoardMat     = new THREE.MeshStandardMaterial({ color: 0xf0ece6, roughness: 0.95 });
+    const placeholderMat  = new THREE.MeshStandardMaterial({ color: 0xb8ad9e, roughness: 1.0 });
+
+    FRAME_SLOTS.forEach((slot, i) => {
+      const pd = PHOTO_DATA[i % PHOTO_DATA.length];
+      const group = new THREE.Group();
+
+      // Frame border (4 bars)
+      const bars = [
+        [0,  FRAME_H/2, FRAME_W, FRAME_T, 0.08],
+        [0, -FRAME_H/2, FRAME_W, FRAME_T, 0.08],
+        [-FRAME_W/2, 0, FRAME_T, FRAME_H - FRAME_T*2, 0.08],
+        [ FRAME_W/2, 0, FRAME_T, FRAME_H - FRAME_T*2, 0.08],
+      ];
+      bars.forEach(([bx, by, bw, bh, bd]) => {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), frameBorderMat.clone());
+        m.position.set(bx, by, 0);
+        m.castShadow = true;
+        group.add(m);
+      });
+
+      // Mat board
+      const matW = FRAME_W - FRAME_T*2;
+      const matH = FRAME_H - FRAME_T*2;
+      const mb = new THREE.Mesh(new THREE.PlaneGeometry(matW, matH), matBoardMat.clone());
+      mb.position.z = 0.025;
+      group.add(mb);
+
+      // Photo plane
+      const photoW = matW - 0.14;
+      const photoH = matH - 0.14;
+      const pp = new THREE.Mesh(new THREE.PlaneGeometry(photoW, photoH), placeholderMat.clone());
+      pp.position.z = 0.04;
+      pp.userData.thumb = pd.thumb;
+      pp.userData.loaded = false;
+      group.add(pp);
+
+      // Nail detail (small sphere top-center)
+      const nail = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 6, 6),
+        new THREE.MeshStandardMaterial({ color: 0xccccaa, roughness: 0.3, metalness: 0.8 })
+      );
+      nail.position.set(0, FRAME_H/2 + 0.04, 0.05);
+      group.add(nail);
+
+      group.position.set(...slot.pos);
+      group.rotation.y = slot.rotY;
+      group.userData.photoData = pd;
+      group.userData.pp = pp;
+
+      scene.add(group);
+      frameObjects.push(group);
+    });
+
+    // Frame shadow-casting spotlights above each frame cluster
+    // (handled by ceiling spots; individual frame lights not needed)
+
+    // Lazy texture loading
+    let frameCheckCounter = 0;
+    function updateFrameTextures() {
+      frameCheckCounter++;
+      if (frameCheckCounter % 8 !== 0) return; // check every 8 frames
+      frameObjects.forEach(fr => {
+        const pp = fr.userData.pp;
+        if (pp.userData.loaded) return;
+        const dx = car.position.x - fr.position.x;
+        const dz = car.position.z - fr.position.z;
+        if (dx*dx + dz*dz < LOAD_DIST * LOAD_DIST) {
+          pp.userData.loaded = true;
+          textureLoader.load(pp.userData.thumb, tex => {
+            tex.encoding = THREE.sRGBEncoding;
+            pp.material = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75 });
+          });
+        }
+      });
+    }
+
+    // ─────────────────────────────────────────
+    //  PROXIMITY HIGHLIGHTING
+    // ─────────────────────────────────────────
+    const HIGHLIGHT_DIST = 5.5;
+    let highlightedFrame = null;
+
+    const tooltip = document.getElementById('photoTooltip');
+
+    function updateHighlights() {
+      let closest = null, closestD = Infinity;
+      frameObjects.forEach(fr => {
+        const dx = car.position.x - fr.position.x;
+        const dz = car.position.z - fr.position.z;
+        const d  = Math.sqrt(dx*dx + dz*dz);
+        if (d < HIGHLIGHT_DIST && d < closestD) { closestD = d; closest = fr; }
+      });
+
+      if (closest !== highlightedFrame) {
+        if (highlightedFrame) {
+          gsap.to(highlightedFrame.scale, { x:1, y:1, z:1, duration: 0.4, ease:'power2.inOut' });
+          highlightedFrame.children.forEach(c => {
+            if (c.material && c.material.emissive) {
+              c.material.emissiveIntensity = 0;
+            }
+          });
+          tooltip.classList.remove('visible');
+        }
+        if (closest) {
+          gsap.to(closest.scale, { x:1.07, y:1.07, z:1.07, duration: 0.4, ease:'power2.out' });
+          closest.children.forEach(c => {
+            if (c.material) {
+              c.material.emissive = new THREE.Color(0x8a7a60);
+              c.material.emissiveIntensity = 0.18;
+            }
+          });
+          const pd = closest.userData.photoData;
+          tooltip.querySelector('.tt-name').textContent = pd.name.toUpperCase();
+          tooltip.querySelector('.tt-year').textContent = pd.year;
+          tooltip.classList.add('visible');
+        }
+        highlightedFrame = closest;
+      }
+    }
+
+    // ─────────────────────────────────────────
+    //  CAMERA FOLLOW
+    // ─────────────────────────────────────────
+    let exitCameraMode = false;
+    let exitCameraT    = 0;
+    let exitCameraStart = new THREE.Vector3();
+
+    function updateCamera(dt) {
+      if (exitCameraMode) {
+        exitCameraT += dt;
+        const t   = Math.min(exitCameraT / 1.6, 1);
+        const et  = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+        const exitTargetPos  = new THREE.Vector3(0, 3.5, HD + 6);
+        const exitTargetLook = new THREE.Vector3(0, 1.5, HD + 10);
+        camera.position.lerpVectors(exitCameraStart, exitTargetPos, et);
+        const lk = new THREE.Vector3().lerpVectors(camCurrentLook, exitTargetLook, et);
+        camera.lookAt(lk);
+        if (t >= 1 && !exitFading) {
+          exitFading = true;
+          gsap.to(document.getElementById('transitionOverlay'), {
+            opacity: 1, duration: 0.9, ease: 'power2.in',
+            onComplete: () => { window.location.href = 'index.html'; }
+          });
+        }
+        return;
+      }
+
+      const facing = new THREE.Vector3(Math.sin(car.rotation.y), 0, Math.cos(car.rotation.y));
+      const desired = car.position.clone()
+        .add(new THREE.Vector3(0, 13, 0))
+        .add(facing.clone().multiplyScalar(-10));
+
+      const desiredLook = car.position.clone().add(facing.clone().multiplyScalar(3));
+
+      camCurrentPos.lerp(desired, 0.07);
+      camCurrentLook.lerp(desiredLook, 0.10);
+
+      camera.position.copy(camCurrentPos);
+      camera.lookAt(camCurrentLook);
+    }
+
+    // ─────────────────────────────────────────
+    //  EXIT ZONE
+    // ─────────────────────────────────────────
+    const EXIT_ZONE = { minX: -EXIT_GAP/2 - 0.5, maxX: EXIT_GAP/2 + 0.5, minZ: HD - 2, maxZ: HD + 4 };
+    let exitTriggered = false;
+    let exitFading    = false;
+
+    function checkExit() {
+      if (exitTriggered) return;
+      const { x, z } = car.position;
+      if (x > EXIT_ZONE.minX && x < EXIT_ZONE.maxX && z > EXIT_ZONE.minZ) {
+        exitTriggered = true;
+        keys.forward = keys.backward = keys.left = keys.right = false;
+        carVel = 0; carAngVel = 0;
+        exitCameraMode = true;
+        exitCameraT    = 0;
+        exitCameraStart.copy(camera.position);
+      }
+    }
+
+    // ─────────────────────────────────────────
+    //  MINIMAP
+    // ─────────────────────────────────────────
+    const mapCanvas = document.getElementById('minimap');
+    const mapCtx    = mapCanvas.getContext('2d');
+    mapCanvas.width  = 90;
+    mapCanvas.height = 108;
+    const MAP_SCALE = 90 / ROOM_W;
+
+    function drawMinimap() {
+      mapCtx.clearRect(0, 0, 90, 108);
+      // Background
+      mapCtx.fillStyle = 'rgba(26,22,20,0.88)';
+      mapCtx.fillRect(0, 0, 90, 108);
+      // Room outline
+      mapCtx.strokeStyle = 'rgba(245,245,245,0.20)';
+      mapCtx.lineWidth = 0.8;
+      mapCtx.strokeRect(0, 0, 90, 108);
+      // Walls
+      mapCtx.fillStyle = 'rgba(240,237,232,0.35)';
+      wallDefs.forEach(def => {
+        const mx = (def.x + HW) * MAP_SCALE;
+        const mz = (def.z + HD) * (108 / ROOM_D);
+        const mw = (Math.abs(def.rotY % Math.PI) < 0.1 ? def.w : def.d) * MAP_SCALE;
+        const md = (Math.abs(def.rotY % Math.PI) < 0.1 ? def.d : def.w) * (108 / ROOM_D);
+        mapCtx.fillRect(mx - mw/2, mz - md/2, mw, md);
+      });
+      // Exit glow
+      mapCtx.fillStyle = 'rgba(255,245,180,0.35)';
+      mapCtx.fillRect((HW - EXIT_GAP/2) * MAP_SCALE, 104, EXIT_GAP * MAP_SCALE, 4);
+      // Car dot
+      const cx = (car.position.x + HW) * MAP_SCALE;
+      const cz = (car.position.z + HD) * (108 / ROOM_D);
+      mapCtx.save();
+      mapCtx.translate(cx, cz);
+      mapCtx.rotate(-car.rotation.y);
+      mapCtx.fillStyle = '#e63946';
+      mapCtx.fillRect(-2.5, -4, 5, 8);
+      mapCtx.restore();
+    }
+
+    // ─────────────────────────────────────────
+    //  CONTROLS HINT FADE
+    // ─────────────────────────────────────────
+    const hint = document.getElementById('controlsHint');
+    setTimeout(() => { gsap.to(hint, { opacity: 0, duration: 1.5 }); }, 5000);
+
+    // ─────────────────────────────────────────
+    //  RESIZE
+    // ─────────────────────────────────────────
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ─────────────────────────────────────────
+    //  ANIMATE LOOP
+    // ─────────────────────────────────────────
+    let lastTime = 0;
+    function animate(now) {
+      requestAnimationFrame(animate);
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      if (!exitTriggered) {
+        updateCar(dt);
+        updateHighlights();
+        checkExit();
+        updateFrameTextures();
+      }
+      updateCamera(dt);
+      drawMinimap();
+
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+  }
+  </script>
+</body>
+</html>
