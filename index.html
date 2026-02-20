@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gauthier Tijtgat — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="lego-stack">
+      <div class="lego-brick b1"></div>
+      <div class="lego-brick b2"></div>
+      <div class="lego-brick b3"></div>
+      <div class="lego-brick b4"></div>
+      <div class="lego-brick b5"></div>
+    </div>
+    <div class="preloader-text">LOADING</div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="customCursor">
+    <span class="cursor-lat">41.9028°N</span>
+    <span class="cursor-lng">12.4964°E</span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">Gauthier Tijtgat</div>
+    <div class="nav-links">
+      <a href="#" class="nav-link" id="aboutToggle">[ABOUT]</a>
+      <a href="#" class="nav-link" id="filterToggle">[FILTER]</a>
+    </div>
+  </nav>
+
+  <!-- Intro Text -->
+  <div class="intro-text" id="introText">
+    <p>I hope y'all took your motion pills because we're going to the Hills.</p>
+  </div>
+
+  <!-- FILTERS:START -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn" data-year="2016">2016</button>
+    <button class="filter-btn" data-year="2017">2017</button>
+    <button class="filter-btn" data-year="2019">2019</button>
+    <button class="filter-btn" data-year="2020">2020</button>
+    <button class="filter-btn" data-year="2021">2021</button>
+    <button class="filter-btn" data-year="2022">2022</button>
+    <button class="filter-btn" data-year="2023">2023</button>
+    <button class="filter-btn" data-year="2024">2024</button>
+    <button class="filter-btn" data-year="2025">2025</button>
+    <button class="filter-btn" data-year="2026">2026</button>
+  </div>
+  <!-- FILTERS:END -->
+
+  <!-- Blur Overlay (single GPU layer for smooth blur) -->
+  <div class="blur-overlay" id="blurOverlay"></div>
+
+  <!-- Scroll Container -->
+  <div class="scroll-container" id="scrollContainer">
+    <!-- PHOTOS:START -->
+    <div class="canvas" id="canvas" style="height: 7860px;">
+    <div class="portfolio-item" data-year="2020" style="left: 12%; top: 106px;">
+      <img class="item-image" decoding="async" src="thumbs/01_Willa_2020.JPG" data-full="photos/01_Willa_2020.JPG" alt="01 Willa" loading="eager" fetchpriority="high">
+      <div class="item-info">
+        <span class="item-name" data-text="01 Willa">01 Willa</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 37.9%; top: 93px;">
+      <img class="item-image" decoding="async" src="thumbs/02_Wirtz_2025.jpg" data-full="photos/02_Wirtz_2025.jpg" alt="02 Wirtz" loading="eager" fetchpriority="high">
+      <div class="item-info">
+        <span class="item-name" data-text="02 Wirtz">02 Wirtz</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2017" style="left: 59.5%; top: 90px;">
+      <img class="item-image" decoding="async" src="thumbs/03_Iced_2017.JPG" data-full="photos/03_Iced_2017.JPG" alt="03 Iced" loading="eager" fetchpriority="high">
+      <div class="item-info">
+        <span class="item-name" data-text="03 Iced">03 Iced</span>
+        <span class="item-year">2017</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 84.9%; top: 106px;">
+      <img class="item-image" decoding="async" src="thumbs/04_Gamble - Tokyo_2025.jpg" data-full="photos/04_Gamble - Tokyo_2025.jpg" alt="04 Gamble - Tokyo" loading="eager" fetchpriority="high">
+      <div class="item-info">
+        <span class="item-name" data-text="04 Gamble - Tokyo">04 Gamble - Tokyo</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 14.1%; top: 453px;">
+      <img class="item-image" decoding="async" src="thumbs/05_Amigos_2024.jpg" data-full="photos/05_Amigos_2024.jpg" alt="05 Amigos" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="05 Amigos">05 Amigos</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2026" style="left: 35.4%; top: 481px;">
+      <img class="item-image" decoding="async" src="thumbs/06_Castro_2026.jpg" data-full="photos/06_Castro_2026.jpg" alt="06 Castro" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="06 Castro">06 Castro</span>
+        <span class="item-year">2026</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 61.6%; top: 463px;">
+      <img class="item-image" decoding="async" src="thumbs/07_Alca.jpg" data-full="photos/07_Alca.jpg" alt="07 Alca" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="07 Alca">07 Alca</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 82%; top: 452px;">
+      <img class="item-image" decoding="async" src="thumbs/08_Balcony_2025.jpg" data-full="photos/08_Balcony_2025.jpg" alt="08 Balcony" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="08 Balcony">08 Balcony</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 12.8%; top: 816px;">
+      <img class="item-image" decoding="async" src="thumbs/09_Harley in Paris_2022.JPG" data-full="photos/09_Harley in Paris_2022.JPG" alt="09 Harley in Paris" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="09 Harley in Paris">09 Harley in Paris</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 35.4%; top: 840px;">
+      <img class="item-image" decoding="async" src="thumbs/1-3_2025.jpg" data-full="photos/1-3_2025.jpg" alt="1-3" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="1-3">1-3</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 60.1%; top: 842px;">
+      <img class="item-image" decoding="async" src="thumbs/Alcatraz_2023.JPG" data-full="photos/Alcatraz_2023.JPG" alt="Alcatraz" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Alcatraz">Alcatraz</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2016" style="left: 83.9%; top: 804px;">
+      <img class="item-image" decoding="async" src="thumbs/Amber_2016.JPG" data-full="photos/Amber_2016.JPG" alt="Amber" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Amber">Amber</span>
+        <span class="item-year">2016</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 14.2%; top: 1167px;">
+      <img class="item-image" decoding="async" src="thumbs/Balou_2022.JPG" data-full="photos/Balou_2022.JPG" alt="Balou" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Balou">Balou</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2021" style="left: 38.5%; top: 1183px;">
+      <img class="item-image" decoding="async" src="thumbs/Bellesoeurs_2021.JPG" data-full="photos/Bellesoeurs_2021.JPG" alt="Bellesoeurs" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Bellesoeurs">Bellesoeurs</span>
+        <span class="item-year">2021</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 59.9%; top: 1183px;">
+      <img class="item-image" decoding="async" src="thumbs/Boats_2025.jpg" data-full="photos/Boats_2025.jpg" alt="Boats" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Boats">Boats</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2026" style="left: 81.9%; top: 1161px;">
+      <img class="item-image" decoding="async" src="thumbs/Broad_2026.jpg" data-full="photos/Broad_2026.jpg" alt="Broad" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Broad">Broad</span>
+        <span class="item-year">2026</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 12.1%; top: 1570px;">
+      <img class="item-image" decoding="async" src="thumbs/Bryce_2024.jpg" data-full="photos/Bryce_2024.jpg" alt="Bryce" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Bryce">Bryce</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 38.7%; top: 1559px;">
+      <img class="item-image" decoding="async" src="thumbs/C63_2020.jpg" data-full="photos/C63_2020.jpg" alt="C63" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="C63">C63</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2019" style="left: 60.3%; top: 1558px;">
+      <img class="item-image" decoding="async" src="thumbs/Cab_2019.JPG" data-full="photos/Cab_2019.JPG" alt="Cab" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Cab">Cab</span>
+        <span class="item-year">2019</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 83.5%; top: 1537px;">
+      <img class="item-image" decoding="async" src="thumbs/Caleb_2022.JPG" data-full="photos/Caleb_2022.JPG" alt="Caleb" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Caleb">Caleb</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 13.5%; top: 1893px;">
+      <img class="item-image" decoding="async" src="thumbs/Carlos at the Piscine_2023.JPG" data-full="photos/Carlos at the Piscine_2023.JPG" alt="Carlos at the Piscine" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Carlos at the Piscine">Carlos at the Piscine</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 36.4%; top: 1912px;">
+      <img class="item-image" decoding="async" src="thumbs/Caro_2023.JPG" data-full="photos/Caro_2023.JPG" alt="Caro" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Caro">Caro</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 59.5%; top: 1883px;">
+      <img class="item-image" decoding="async" src="thumbs/Church in Aus_2025.jpg" data-full="photos/Church in Aus_2025.jpg" alt="Church in Aus" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Church in Aus">Church in Aus</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 83.1%; top: 1888px;">
+      <img class="item-image" decoding="async" src="thumbs/Crooked_2025.jpg" data-full="photos/Crooked_2025.jpg" alt="Crooked" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Crooked">Crooked</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 13.8%; top: 2256px;">
+      <img class="item-image" decoding="async" src="thumbs/Cruising_2020.JPG" data-full="photos/Cruising_2020.JPG" alt="Cruising" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Cruising">Cruising</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 35.8%; top: 2243px;">
+      <img class="item-image" decoding="async" src="thumbs/Dead_2024.JPG" data-full="photos/Dead_2024.JPG" alt="Dead" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Dead">Dead</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 61.9%; top: 2267px;">
+      <img class="item-image" decoding="async" src="thumbs/Dustin_2020.JPG" data-full="photos/Dustin_2020.JPG" alt="Dustin" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Dustin">Dustin</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2016" style="left: 81.4%; top: 2290px;">
+      <img class="item-image" decoding="async" src="thumbs/Emoh_2016.JPG" data-full="photos/Emoh_2016.JPG" alt="Emoh" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Emoh">Emoh</span>
+        <span class="item-year">2016</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 13.7%; top: 2635px;">
+      <img class="item-image" decoding="async" src="thumbs/FLUME_2022.JPG" data-full="photos/FLUME_2022.JPG" alt="FLUME" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="FLUME">FLUME</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 35.7%; top: 2627px;">
+      <img class="item-image" decoding="async" src="thumbs/Flying_2025.jpg" data-full="photos/Flying_2025.jpg" alt="Flying" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Flying">Flying</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 62%; top: 2609px;">
+      <img class="item-image" decoding="async" src="thumbs/Glacier_2025.jpg" data-full="photos/Glacier_2025.jpg" alt="Glacier" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Glacier">Glacier</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 83.7%; top: 2620px;">
+      <img class="item-image" decoding="async" src="thumbs/HK_2020.JPG" data-full="photos/HK_2020.JPG" alt="HK" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="HK">HK</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2016" style="left: 13.8%; top: 2997px;">
+      <img class="item-image" decoding="async" src="thumbs/Harley_2016.JPG" data-full="photos/Harley_2016.JPG" alt="Harley" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Harley">Harley</span>
+        <span class="item-year">2016</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 35.7%; top: 3001px;">
+      <img class="item-image" decoding="async" src="thumbs/Hill_2025.jpg" data-full="photos/Hill_2025.jpg" alt="Hill" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Hill">Hill</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2016" style="left: 61.2%; top: 2965px;">
+      <img class="item-image" decoding="async" src="thumbs/House_2016.JPG" data-full="photos/House_2016.JPG" alt="House" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="House">House</span>
+        <span class="item-year">2016</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2019" style="left: 81.1%; top: 2967px;">
+      <img class="item-image" decoding="async" src="thumbs/Jagerbars_2019.JPG" data-full="photos/Jagerbars_2019.JPG" alt="Jagerbars" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Jagerbars">Jagerbars</span>
+        <span class="item-year">2019</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 14.5%; top: 3339px;">
+      <img class="item-image" decoding="async" src="thumbs/Japan Cat_2025.JPG" data-full="photos/Japan Cat_2025.JPG" alt="Japan Cat" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Japan Cat">Japan Cat</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 36%; top: 3345px;">
+      <img class="item-image" decoding="async" src="thumbs/Jinx_2022.JPG" data-full="photos/Jinx_2022.JPG" alt="Jinx" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Jinx">Jinx</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 60.1%; top: 3325px;">
+      <img class="item-image" decoding="async" src="thumbs/Joy_2020.JPG" data-full="photos/Joy_2020.JPG" alt="Joy" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Joy">Joy</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2021" style="left: 84.9%; top: 3337px;">
+      <img class="item-image" decoding="async" src="thumbs/Julie_2021.JPG" data-full="photos/Julie_2021.JPG" alt="Julie" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Julie">Julie</span>
+        <span class="item-year">2021</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 15.1%; top: 3693px;">
+      <img class="item-image" decoding="async" src="thumbs/Kings at Zandvoort_2022.JPG" data-full="photos/Kings at Zandvoort_2022.JPG" alt="Kings at Zandvoort" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Kings at Zandvoort">Kings at Zandvoort</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2026" style="left: 37.7%; top: 3726px;">
+      <img class="item-image" decoding="async" src="thumbs/LAX_2026.jpg" data-full="photos/LAX_2026.jpg" alt="LAX" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="LAX">LAX</span>
+        <span class="item-year">2026</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 59.9%; top: 3702px;">
+      <img class="item-image" decoding="async" src="thumbs/Ladies_2024.JPG" data-full="photos/Ladies_2024.JPG" alt="Ladies" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Ladies">Ladies</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 84.7%; top: 3703px;">
+      <img class="item-image" decoding="async" src="thumbs/Last Dance_2022.jpg" data-full="photos/Last Dance_2022.jpg" alt="Last Dance" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Last Dance">Last Dance</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 15.9%; top: 4056px;">
+      <img class="item-image" decoding="async" src="thumbs/Mandy_2020.JPG" data-full="photos/Mandy_2020.JPG" alt="Mandy" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Mandy">Mandy</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 38.2%; top: 4083px;">
+      <img class="item-image" decoding="async" src="thumbs/Marina_2023.JPG" data-full="photos/Marina_2023.JPG" alt="Marina" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Marina">Marina</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2019" style="left: 61%; top: 4068px;">
+      <img class="item-image" decoding="async" src="thumbs/Matrix_2019.JPG" data-full="photos/Matrix_2019.JPG" alt="Matrix" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Matrix">Matrix</span>
+        <span class="item-year">2019</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 84.3%; top: 4067px;">
+      <img class="item-image" decoding="async" src="thumbs/Monké_2025.jpg" data-full="photos/Monké_2025.jpg" alt="Monké" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Monké">Monké</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 13.2%; top: 4417px;">
+      <img class="item-image" decoding="async" src="thumbs/Monterey_2024.JPG" data-full="photos/Monterey_2024.JPG" alt="Monterey" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Monterey">Monterey</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 36.2%; top: 4422px;">
+      <img class="item-image" decoding="async" src="thumbs/Nathan_2025.jpg" data-full="photos/Nathan_2025.jpg" alt="Nathan" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Nathan">Nathan</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2020" style="left: 60.3%; top: 4433px;">
+      <img class="item-image" decoding="async" src="thumbs/Neon in HK_2020.JPG" data-full="photos/Neon in HK_2020.JPG" alt="Neon in HK" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Neon in HK">Neon in HK</span>
+        <span class="item-year">2020</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 81.3%; top: 4424px;">
+      <img class="item-image" decoding="async" src="thumbs/Nightwalk 101_2025.jpg" data-full="photos/Nightwalk 101_2025.jpg" alt="Nightwalk 101" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Nightwalk 101">Nightwalk 101</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 13.8%; top: 4760px;">
+      <img class="item-image" decoding="async" src="thumbs/Norvège_2025.jpg" data-full="photos/Norvège_2025.jpg" alt="Norvège" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Norvège">Norvège</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 37.8%; top: 4779px;">
+      <img class="item-image" decoding="async" src="thumbs/One last lake_2025.jpg" data-full="photos/One last lake_2025.jpg" alt="One last lake" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="One last lake">One last lake</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2021" style="left: 59.8%; top: 4807px;">
+      <img class="item-image" decoding="async" src="thumbs/Orange in Monaco_2021.jpg" data-full="photos/Orange in Monaco_2021.jpg" alt="Orange in Monaco" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Orange in Monaco">Orange in Monaco</span>
+        <span class="item-year">2021</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 81.5%; top: 4781px;">
+      <img class="item-image" decoding="async" src="thumbs/Piastri in MC_2023.JPG" data-full="photos/Piastri in MC_2023.JPG" alt="Piastri in MC" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Piastri in MC">Piastri in MC</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 13.2%; top: 5141px;">
+      <img class="item-image" decoding="async" src="thumbs/Pigs_2022.JPG" data-full="photos/Pigs_2022.JPG" alt="Pigs" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Pigs">Pigs</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2019" style="left: 36%; top: 5138px;">
+      <img class="item-image" decoding="async" src="thumbs/Porsché_2019.JPG" data-full="photos/Porsché_2019.JPG" alt="Porsché" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Porsché">Porsché</span>
+        <span class="item-year">2019</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 60.8%; top: 5167px;">
+      <img class="item-image" decoding="async" src="thumbs/Robots_2024.jpg" data-full="photos/Robots_2024.jpg" alt="Robots" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Robots">Robots</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2026" style="left: 81.1%; top: 5144px;">
+      <img class="item-image" decoding="async" src="thumbs/Skaterboi_2026.jpg" data-full="photos/Skaterboi_2026.jpg" alt="Skaterboi" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Skaterboi">Skaterboi</span>
+        <span class="item-year">2026</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2019" style="left: 15.3%; top: 5507px;">
+      <img class="item-image" decoding="async" src="thumbs/Sloan_2019.JPG" data-full="photos/Sloan_2019.JPG" alt="Sloan" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Sloan">Sloan</span>
+        <span class="item-year">2019</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 35.5%; top: 5500px;">
+      <img class="item-image" decoding="async" src="thumbs/Stones_2023.JPG" data-full="photos/Stones_2023.JPG" alt="Stones" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Stones">Stones</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 58.5%; top: 5521px;">
+      <img class="item-image" decoding="async" src="thumbs/Studios_2023.JPG" data-full="photos/Studios_2023.JPG" alt="Studios" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Studios">Studios</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2016" style="left: 82.6%; top: 5484px;">
+      <img class="item-image" decoding="async" src="thumbs/TS_2016.JPG" data-full="photos/TS_2016.JPG" alt="TS" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="TS">TS</span>
+        <span class="item-year">2016</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2017" style="left: 14.4%; top: 5857px;">
+      <img class="item-image" decoding="async" src="thumbs/Tall_2017.JPG" data-full="photos/Tall_2017.JPG" alt="Tall" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Tall">Tall</span>
+        <span class="item-year">2017</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 36%; top: 5859px;">
+      <img class="item-image" decoding="async" src="thumbs/Tennis Courts_2022.JPG" data-full="photos/Tennis Courts_2022.JPG" alt="Tennis Courts" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Tennis Courts">Tennis Courts</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2026" style="left: 59.3%; top: 5871px;">
+      <img class="item-image" decoding="async" src="thumbs/The Last House_2026.jpg" data-full="photos/The Last House_2026.jpg" alt="The Last House" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="The Last House">The Last House</span>
+        <span class="item-year">2026</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 81.8%; top: 5854px;">
+      <img class="item-image" decoding="async" src="thumbs/Tokyo Drift_2025.JPG" data-full="photos/Tokyo Drift_2025.JPG" alt="Tokyo Drift" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Tokyo Drift">Tokyo Drift</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 16%; top: 6210px;">
+      <img class="item-image" decoding="async" src="thumbs/Toto_2022.JPG" data-full="photos/Toto_2022.JPG" alt="Toto" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Toto">Toto</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 37.6%; top: 6226px;">
+      <img class="item-image" decoding="async" src="thumbs/Trees_2025.jpg" data-full="photos/Trees_2025.jpg" alt="Trees" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Trees">Trees</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2025" style="left: 61.1%; top: 6206px;">
+      <img class="item-image" decoding="async" src="thumbs/Valley_2025.jpg" data-full="photos/Valley_2025.jpg" alt="Valley" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Valley">Valley</span>
+        <span class="item-year">2025</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2022" style="left: 82.4%; top: 6211px;">
+      <img class="item-image" decoding="async" src="thumbs/Vatteri_2022.JPG" data-full="photos/Vatteri_2022.JPG" alt="Vatteri" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Vatteri">Vatteri</span>
+        <span class="item-year">2022</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 13.2%; top: 6568px;">
+      <img class="item-image" decoding="async" src="thumbs/Vegas_2023.JPG" data-full="photos/Vegas_2023.JPG" alt="Vegas" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Vegas">Vegas</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2026" style="left: 38.8%; top: 6596px;">
+      <img class="item-image" decoding="async" src="thumbs/Venice_2026.jpg" data-full="photos/Venice_2026.jpg" alt="Venice" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Venice">Venice</span>
+        <span class="item-year">2026</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2016" style="left: 60.4%; top: 6586px;">
+      <img class="item-image" decoding="async" src="thumbs/Wall_2016.JPG" data-full="photos/Wall_2016.JPG" alt="Wall" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Wall">Wall</span>
+        <span class="item-year">2016</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 83%; top: 6578px;">
+      <img class="item-image" decoding="async" src="thumbs/Whaling_2024.jpg" data-full="photos/Whaling_2024.jpg" alt="Whaling" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Whaling">Whaling</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2019" style="left: 13.2%; top: 6939px;">
+      <img class="item-image" decoding="async" src="thumbs/Willa Holland_2019.JPG" data-full="photos/Willa Holland_2019.JPG" alt="Willa Holland" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Willa Holland">Willa Holland</span>
+        <span class="item-year">2019</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 36.6%; top: 6941px;">
+      <img class="item-image" decoding="async" src="thumbs/YSMT_2023.JPG" data-full="photos/YSMT_2023.JPG" alt="YSMT" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="YSMT">YSMT</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2023" style="left: 59.3%; top: 6938px;">
+      <img class="item-image" decoding="async" src="thumbs/Yosemite_2023.JPG" data-full="photos/Yosemite_2023.JPG" alt="Yosemite" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Yosemite">Yosemite</span>
+        <span class="item-year">2023</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 81.4%; top: 6956px;">
+      <img class="item-image" decoding="async" src="thumbs/Yosemite_2024.jpg" data-full="photos/Yosemite_2024.jpg" alt="Yosemite" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Yosemite">Yosemite</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    <div class="portfolio-item" data-year="2024" style="left: 13.6%; top: 7281px;">
+      <img class="item-image" decoding="async" src="thumbs/Zion_2024.jpg" data-full="photos/Zion_2024.jpg" alt="Zion" loading="lazy">
+      <div class="item-info">
+        <span class="item-name" data-text="Zion">Zion</span>
+        <span class="item-year">2024</span>
+      </div>
+    </div>
+    </div>
+    <!-- PHOTOS:END -->
+  </div>
+
+  <!-- About Overlay -->
+  <div class="about-overlay" id="aboutOverlay">
+    <div class="about-content">
+      <h2 class="about-heading">About</h2>
+      <p class="about-text">
+I’m Gauthier Tijtgat, and this website represents more than just projects—it captures 10 years of growth, learning, and relentless building. What started as a student entrepreneur’s curiosity has evolved into a full-fledged business shaped by risk, resilience, and real-world experience. Every step of the journey came with lessons, challenges, and people who believed in the vision, and for that I’m deeply grateful. This space is both a reflection of where I started and a testament to how far dedication and passion can take you—thank you for being here and taking the time to explore it.
+      </p>
+      <div class="about-contact">
+        <a href="https://instagram.com/gauthiertijtgat" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.linkedin.com/in/gauthiertijtgat" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:hello@gauthiertijtgat.be">Email</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
